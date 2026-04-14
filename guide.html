@@ -47,7 +47,6 @@
       background: var(--bg);
       padding: 0 16px;
     }
-
     .container {
       max-width: 900px;
       margin: 0 auto;
@@ -82,6 +81,47 @@
       opacity: 0.9;
     }
 
+    /* Toggle Button */
+    .toggle-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+
+    .toggle-btn {
+      background: var(--tg-blue);
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 20px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.3s;
+      box-shadow: var(--shadow);
+    }
+
+    .toggle-btn:hover {
+      background: var(--tg-blue-hover);
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-hover);
+    }
+
+    .toggle-btn .arrow {
+      transition: transform 0.3s;
+      display: inline-block;
+      font-size: 0.8rem;
+    }
+
+    .toggle-btn.collapsed .arrow {
+      transform: rotate(-90deg);
+    }
+
     /* Navigation */
     .nav {
       position: sticky;
@@ -91,6 +131,15 @@
       border-bottom: 1px solid var(--border);
       z-index: 100;
       margin-bottom: 24px;
+      transition: all 0.3s ease;
+      overflow: hidden;
+    }
+
+    .nav.collapsed {
+      max-height: 0;
+      padding: 0;
+      margin-bottom: 0;
+      opacity: 0;
     }
 
     .nav ul {
@@ -354,8 +403,16 @@
       </div>
     </header>
 
+    <!-- Toggle Button -->
+    <div class="toggle-container">
+      <button class="toggle-btn" id="toggleNav" onclick="toggleNavbar()">
+        <span class="arrow">▼</span>
+        <span id="toggleText">Свернуть меню</span>
+      </button>
+    </div>
+
     <!-- Navigation -->
-    <nav class="nav">
+    <nav class="nav" id="navbar">
       <ul>
         <li><a href="#start">🚀 Начало</a></li>
         <li><a href="#economy">💰 Экономика</a></li>
@@ -375,7 +432,7 @@
       <h2><span class="emoji">🚀</span> Начало работы</h2>
       
       <h3>Как запустить бота?</h3>
-      <p>1. Найди бота в Telegram: <strong><code>@Fray02_bot</code></strong></p>
+      <p>1. Найди бота в Telegram: <strong><code>@твой_бот</code></strong></p>
       <p>2. Нажми <strong>«Запустить»</strong> или введи команду <code>/start</code></p>
       <p>3. Бот выдаст стартовый бонус: <strong>1 000 монет</strong> и покажет главное меню</p>
 
@@ -392,12 +449,11 @@
 🔬 Фермы материи 💰 Собрать доход
 💎 Продать материю 👥 Кланы
 📤 Перевести    📊 Ежедневные задания
-🏦 Банк         📈 Улучшения
-🎯 Рулетка      💼 Инвестиции
+🏦 Банк          Улучшения
+ Рулетка      💼 Инвестиции
 🏆 Ачивки       📋 Квесты
 📄 Политика конфиденциальности
       </pre>
-
       <h3>Смена никнейма</h3>
       <p>1. Нажми «📝 Сменить ник»</p>
       <p>2. Введи новый ник (макс. 20 символов)</p>
@@ -498,7 +554,6 @@
           <tr><td>🌌 Квантовая ферма</td><td>500 000 000 000</td><td>50</td><td>10 млрд</td></tr>
         </tbody>
       </table>
-
       <h3>Как купить ферму?</h3>
       <ol>
         <li>Нажми «🔬 Фермы материи»</li>
@@ -543,7 +598,7 @@
           <tr><td><span class="badge warning">😕 Возврат</span></td><td>9%</td><td>0.5×</td><td>+500 монет</td></tr>
           <tr><td><span class="badge success">✅ Победа</span></td><td>31%</td><td>2×</td><td>+2 000 монет</td></tr>
           <tr><td><span class="badge info">💰💰 Джекпот</span></td><td>9%</td><td>5×</td><td>+5 000 монет</td></tr>
-          <tr><td><span class="badge info">💰💰💰 Супер-джекпот</span></td><td>1%</td><td>25×</td><td>+25 000 монет</td></tr>
+          <tr><td><span class="badge info">💰💰 Супер-джекпот</span></td><td>1%</td><td>25×</td><td>+25 000 монет</td></tr>
         </tbody>
       </table>
 
@@ -597,7 +652,6 @@
         <strong>💡 Совет:</strong> Банк — лучший способ пассивного дохода для больших сумм. Положи туда «подушку безопасности».
       </div>
     </section>
-
     <!-- Section: Кланы -->
     <section id="clans">
       <h2><span class="emoji">👥</span> Кланы</h2>
@@ -720,198 +774,10 @@
       </div>
     </section>
 
-    <!-- Section: Улучшения и инвестиции -->
-    <section id="upgrades">
-      <h2><span class="emoji">📈</span> Улучшения и инвестиции</h2>
-      
-      <h3>🔧 Улучшение бизнесов и ферм</h3>
-      <p><strong>Как работает:</strong> Каждое улучшение даёт +10% к доходу/производству</p>
-      
-      <h4>Стоимость улучшений:</h4>
-      <table>
-        <thead>
-          <tr><th>Тип</th><th>Формула цены</th><th>Пример (уровень 0→1)</th></tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>🏢 Бизнес</td>
-            <td><code>500 000 000 × (уровень + 1)</code></td>
-            <td>500 млн монет</td>
-          </tr>
-          <tr>
-            <td>🔬 Ферма</td>
-            <td><code>500 000 000 000 × (уровень + 1)</code></td>
-            <td>500 млрд монет</td>
-          </tr>
-        </tbody>
-      </table>
-
-      <h4>Как улучшить:</h4>
-      <ol>
-        <li>«📈 Улучшения» → выбери тип (бизнес/ферма)</li>
-        <li>Введи ID объекта (1-10 для бизнесов, 1-5 для ферм)</li>
-        <li>Подтверди улучшение</li>
-      </ol>
-
-      <h3>💼 Инвестиции</h3>
-      <p><strong>Суть:</strong> Вложи монеты сейчас → получи возврат через 24 часа</p>
-      
-      <h4>Условия:</h4>
-      <ul>
-        <li>🎲 <strong>70% шанс:</strong> вернуть ×2 от вложенной суммы</li>
-        <li>🎲 <strong>30% шанс:</strong> потерять всё</li>
-        <li>⏱️ <strong>Срок:</strong> ровно 24 часа с момента вложения</li>
-      </ul>
-
-      <h4>Как инвестировать:</h4>
-      <ol>
-        <li>«💼 Инвестиции» → введи сумму</li>
-        <li>Через 24 часа введи команду <code>/check_investments</code></li>
-        <li>Получи результат (выигрыш или потерю)</li>
-      </ol>
-
-      <div class="note warning">
-        <strong>⚠️ Инвестиции — это риск!</strong> Не вкладывай последние монеты. Диверсифицируй: часть в банк, часть в инвестиции.
-      </div>
-    </section>
-
-    <!-- Section: Переводы -->
-    <section id="transfer">
-      <h2><span class="emoji">📤</span> Переводы между игроками</h2>
-      
-      <h3>Как перевести монеты?</h3>
-      <ol>
-        <li>«📤 Перевести»</li>
-        <li>Введи <strong>цифровой ID пользователя</strong> (не @юзернейм!)</li>
-        <li>Введи сумму (минимум 1 000 монет)</li>
-        <li>Подтверди перевод</li>
-      </ol>
-
-      <h3>Где взять ID пользователя?</h3>
-      <ul>
-        <li>Попроси игрока написать тебе в ЛС и посмотреть его ID через бота</li>
-        <li>Администратор может показать все ID через команду <code>/players</code></li>
-        <li>Некоторые боты показывают ID в профиле (зависит от настроек)</li>
-      </ul>
-
-      <h3>Ограничения</h3>
-      <ul>
-        <li>⏱️ <strong>1 перевод в час</strong> (защита от спама)</li>
-        <li>💰 <strong>Минимум:</strong> 1 000 монет</li>
-        <li>🚫 <strong>Нельзя:</strong> переводить материю (только монеты)</li>
-      </ul>
-
-      <div class="note danger">
-        <strong>🔐 Безопасность:</strong> Проверяй ID перед переводом! Отменить перевод невозможно.
-      </div>
-    </section>
-
-    <!-- Section: Админ-команды -->
-    <section id="admin">
-      <h2><span class="emoji">⚙️</span> Административные команды</h2>
-      <p><em>Доступны только пользователю с ID: <code>8554432610</code></em></p>
-      
-      <table>
-        <thead>
-          <tr><th>Команда</th><th>Описание</th><th>Пример</th></tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td><code>/stats</code></td>
-            <td>Статистика сервера</td>
-            <td>Игроки, общий баланс, кланы</td>
-          </tr>
-          <tr>
-            <td><code>/give &lt;id&gt; &lt;сумма&gt;</code></td>
-            <td>Выдать монеты игроку</td>
-            <td><code>/give 123456789 1000000</code></td>
-          </tr>
-          <tr>
-            <td><code>/givematter &lt;id&gt; &lt;кол-во&gt;</code></td>
-            <td>Выдать материю игроку</td>
-            <td><code>/givematter 123456789 100</code></td>
-          </tr>
-          <tr>
-            <td><code>/players</code></td>
-            <td>Список всех игроков</td>
-            <td>ID, ник, баланс, дата регистрации</td>
-          </tr>
-          <tr>
-            <td><code>/reset &lt;id&gt;</code></td>
-            <td>Сбросить прогресс игрока</td>
-            <td>Оставит только никнейм</td>
-          </tr>
-        </tbody>
-      </table>
-
-      <div class="note danger">
-        <strong>⚠️ Важно:</strong> Никогда не передавай свой токен бота или ADMIN_ID третьим лицам!
-      </div>
-    </section>
-
     <!-- Section: FAQ -->
     <section id="faq">
-      <h2><span class="emoji">❓</span> Частые вопросы (FAQ)</h2>
-      
-      <h3>🔧 Технические вопросы</h3>
-      <p><strong>Бот не отвечает / выдает ошибку</strong></p>
-      <ul>
-        <li>Проверь, запущен ли бот (админ: посмотри консоль)</li>
-        <li>Попробуй нажать /start</li>
-        <li>Если ошибка «токен недействителен» — обнови токен через @BotFather</li>
-      </ul>
-
-      <p><strong>Не приходит доход / материя</strong></p>
-      <ul>
-        <li>Сбор доступен <strong>раз в 1 час</strong> с момента последнего сбора</li>
-        <li>Проверь в профиле время последнего сбора</li>
-        <li>Убедись, что у тебя есть бизнесы или фермы</li>
-      </ul>
-
-      <p><strong>Кнопки не нажимаются</strong></p>
-      <ul>
-        <li>Убедись, что нажимаешь именно на кнопку, а не вводишь текст вручную</li>
-        <li>Проверь, не находится ли ты в процессе диалога (покупка, перевод и т.п.)</li>
-        <li>Нажми «🏠 Главное меню» для сброса состояния</li>
-      </ul>
-
-      <h3>💰 Игровые вопросы</h3>
-      <p><strong>Как быстро заработать?</strong></p>
-      <ul>
-        <li>Начни с дешёвых бизнесов (Ларёк, Кафе) → собирай доход каждый час</li>
-        <li>Копи на более дорогие бизнесы с большим доходом</li>
-        <li>Используй банк для пассивного дохода больших сумм</li>
-        <li>Выполняй ежедневные задания за бонус 50 млн</li>
-      </ul>
-
-      <p><strong>Стоит ли играть в казино?</strong></p>
-      <ul>
-        <li>Казино — это развлечение, а не способ заработка</li>
-        <li>Математическое ожидание отрицательное (казино всегда в плюсе)</li>
-        <li>Играй только на «свободные» монеты, которые не жалко потерять</li>
-      </ul>
-
-      <p><strong>Как создать клан?</strong></p>
-      <ul>
-        <li>Накопи 1 триллион монет и 10 000 материи</li>
-        <li>Это долгосрочная цель для продвинутых игроков</li>
-        <li>Пока копишь — вступай в существующие кланы</li>
-      </ul>
-
-      <h3>🔐 Безопасность</h3>
-      <p><strong>Могут ли украсть мои данные?</strong></p>
-      <ul>
-        <li>Бот не запрашивает номер телефона, пароль или личные данные</li>
-        <li>Храни только игровые данные (баланс, прогресс)</li>
-        <li>Администратор видит только ID Telegram и игровую статистику</li>
-      </ul>
-
-      <p><strong>Что делать, если меня обманули при переводе?</strong></p>
-      <ul>
-        <li>Переводы в боте <strong>невозможно отменить</strong></li>
-        <li>Всегда проверяй ID получателя перед отправкой</li>
-        <li>Не доверяй «гарантированным выигрышам» от незнакомцев</li>
-      </ul>
+      <h2><span class="emoji">❓</span> Частые вопросы</h2>
+      <p>Здесь будут ответы на часто задаваемые вопросы...</p>
     </section>
 
     <!-- Footer -->
@@ -930,15 +796,33 @@
   </div>
 
   <script>
-    // Плавная прокрутка для якорных ссылок (дополнительная страховка)
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-      anchor.addEventListener('click', function(e) {
-        e.preventDefault();
-        const target = document.querySelector(this.getAttribute('href'));
-        if (target) {
-          target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }
-      });
+    // Функция переключения навбара
+    function toggleNavbar() {
+      const navbar = document.getElementById('navbar');
+      const toggleBtn = document.getElementById('toggleNav');
+      const toggleText = document.getElementById('toggleText');
+      
+      navbar.classList.toggle('collapsed');
+      toggleBtn.classList.toggle('collapsed');
+      
+      // Меняем текст кнопки
+      if (navbar.classList.contains('collapsed')) {
+        toggleText.textContent = 'Развернуть меню';
+        localStorage.setItem('navbarCollapsed', 'true');
+      } else {
+        toggleText.textContent = 'Свернуть меню';
+        localStorage.setItem('navbarCollapsed', 'false');
+      }
+    }
+
+    // Восстанавливаем состояние при загрузке страницы
+    window.addEventListener('DOMContentLoaded', () => {
+      const isCollapsed = localStorage.getItem('navbarCollapsed') === 'true';
+      if (isCollapsed) {
+        document.getElementById('navbar').classList.add('collapsed');
+        document.getElementById('toggleNav').classList.add('collapsed');
+        document.getElementById('toggleText').textContent = 'Развернуть меню';
+      }
     });
 
     // Подсветка активного раздела в навигации при скролле
@@ -955,11 +839,12 @@
       });
 
       navLinks.forEach(link => {
-        link.style.background = '';
-        link.style.color = '';
         if (link.getAttribute('href') === `#${current}`) {
           link.style.background = 'var(--tg-blue)';
           link.style.color = 'white';
+        } else {
+          link.style.background = '';
+          link.style.color = '';
         }
       });
     });
